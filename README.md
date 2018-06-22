@@ -14,6 +14,20 @@ something wrong... So beware. (PRs are welcome!)
 - Emacs with version 25.1 or higher compiled with the `--with-modules`
   configure option.
 
+## GPL compatibility
+
+In order for Emacs to load Dynamic Modules, like the ones created
+using this package, the modules need to export a symbol named
+`plugin_is_GPL_compatible` to indicate that that code is released
+under the GPL or compatible license.
+
+If this symbol is not exported, Emacs will refuse the module and error
+out with "Module is not GPL compatible".
+
+For that reason, all modules compiled using this package will export
+the `plugin_is_GPL_compatible` symbol. This is done in the
+[`helpers.nim`](emacs_module/helpers.nim).
+
 ## Usage Example
 
 1. Clone this repo.
@@ -40,18 +54,22 @@ Ran 6 tests, 6 results as expected (2018-06-21 15:27:04-0400, 0.058906 sec)
 
 ## Another Example
 
-This example shows how simple it is to write a Nim proc with the extra
-functionality as that of the `mymod_test` function in the [Emacs
-Modules tutorial][diobla].
+The [`return42.nim`][return42] example shows how simple it is to write
+a Nim proc with the same functionality as that of the `mymod_test`
+function in the [Emacs Modules tutorial][diobla].
 
-**Spoiler**: Other than few lines of boilerplate code, all you do is:
+All you do is:
 
 ```nim
-emacs.defun(return42, 0):
-  env.make_integer(env, 42)
-```
+import emacs_module
 
-[Full code][return42]
+init(emacs)
+
+emacs.defun(return42, 0):
+  return env.make_integer(env, 42)
+
+emacs.provide()
+```
 
 Assuming that you already are past Steps 1 and 2 above, do:
 
