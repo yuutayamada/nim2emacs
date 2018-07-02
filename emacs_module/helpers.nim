@@ -1,5 +1,10 @@
 import strutils
 
+# `plugin_is_GPL_compatible` indicates that its code is released under
+# the GPL or compatible license.
+{.emit:"int plugin_is_GPL_compatible;".}
+# Emacs will refuse to load modules that don't export such a symbol
+# with an error: "Module is not GPL compatible".
 
 type Emacs* = object
   functions*: string
